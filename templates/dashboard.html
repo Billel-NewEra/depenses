@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">Tableau de bord</h2>
+<div class="mb-3 d-flex gap-2">
+  <a href="{{ url_for('add_avance') }}" class="btn btn-primary">➕ Nouvelle avance</a>
+  <a href="{{ url_for('add_entree') }}" class="btn btn-success">➕ Nouvelle entrée client</a>
+</div>
+<div class="row mb-4">
+  <div class="col">💵 Total Versements: <strong>{{ '%.2f'|format(total_versements) }} DA</strong></div>
+  <div class="col">🛍️ Total Dépenses: <strong>{{ '%.2f'|format(total_depenses) }} DA</strong></div>
+  <div class="col">🪙 Total Entrées: <strong>{{ '%.2f'|format(total_entrees) }} DA</strong></div>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Code</th>
+      <th>Titre</th>
+      <th>Description</th>
+      <th>Date</th>
+      <th class="text-end">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for a in avances %}
+    <tr>
+      <td>{{ a.code }}</td>
+      <td>{{ a.titre }}</td>
+      <td class="text-truncate" style="max-width: 300px;">{{ a.description }}</td>
+      <td>{{ a.date_creation }}</td>
+      <td class="text-end">
+        <a href="{{ url_for('avance_detail', avance_id=a.id) }}" class="btn btn-sm btn-outline-secondary">Détails</a>
+        <a href="{{ url_for('edit_avance', avance_id=a.id) }}" class="btn btn-sm btn-warning">✏️</a>
+        <form method="POST" action="{{ url_for('delete_avance', avance_id=a.id) }}" class="d-inline"
+              onsubmit="return confirm('Supprimer cette avance et ses mouvements ?')">
+          <button class="btn btn-sm btn-danger">🗑️</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="5" class="text-muted">Aucune avance.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

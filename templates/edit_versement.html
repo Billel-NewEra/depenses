@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Modifier le versement</h3>
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label">Montant (DA)</label>
+    <input type="number" step="0.01" name="montant" class="form-control" value="{{ '%.2f'|format(v.montant) }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Commentaire</label>
+    <input type="text" name="commentaire" class="form-control" value="{{ v.commentaire }}">
+  </div>
+  <button class="btn btn-warning">Enregistrer</button>
+  <a href="{{ url_for('avance_detail', avance_id=v.avance_id) }}" class="btn btn-link">Annuler</a>
+</form>
+{% endblock %}

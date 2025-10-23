@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Modifier la dépense</h3>
+<form method="POST" enctype="multipart/form-data">
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <input type="text" name="description" class="form-control" value="{{ d.description }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Montant (DA)</label>
+    <input type="number" step="0.01" name="montant" class="form-control" value="{{ '%.2f'|format(d.montant) }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Justificatif actuel</label>
+    <div>
+      {% if d.justificatif %}
+        <a href='{{ url_for("static", filename="uploads/" ~ d.justificatif) }}' target="_blank">Voir le fichier</a>
+      {% else %}
+        <span class="text-muted">Aucun fichier</span>
+      {% endif %}
+    </div>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Remplacer par un nouveau fichier (optionnel)</label>
+    <input type="file" name="justificatif" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+  </div>
+  <button class="btn btn-warning">Enregistrer</button>
+  <a href="{{ url_for('avance_detail', avance_id=d.avance_id) }}" class="btn btn-link">Annuler</a>
+</form>
+{% endblock %}

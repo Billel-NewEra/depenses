@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Modifier l'avance</h3>
+<form method="POST">
+  <div class="mb-3">
+    <label class="form-label">Titre</label>
+    <input type="text" name="titre" class="form-control" value="{{ avance.titre }}" required>
+  </div>
+  <div class="mb-3">
+    <label class="form-label">Description</label>
+    <textarea name="description" class="form-control" rows="3">{{ avance.description }}</textarea>
+  </div>
+  <button class="btn btn-warning">Enregistrer</button>
+  <a href="{{ url_for('avance_detail', avance_id=avance.id) }}" class="btn btn-link">Annuler</a>
+</form>
+{% endblock %}
