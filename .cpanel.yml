@@ -1,0 +1,13 @@
+deployment:
+  tasks:
+    # 1. Définir le dossier de déploiement (celui de ton app Passenger)
+    - export DEPLOYPATH=/home/mobibenz1/depenses
+
+    # 2. Copier les fichiers depuis le repo vers le dossier de l'app
+    - /bin/rsync -a --delete $PWD/ $DEPLOYPATH
+
+    # 3. Installer/mettre à jour les dépendances dans le virtualenv
+    - /home/mobibenz1/virtualenv/depenses/3.10/bin/python3.10 -m pip install -r $DEPLOYPATH/requirements.txt
+
+    # 4. Redémarrer l'application Passenger
+    - touch $DEPLOYPATH/tmp/restart.txt
