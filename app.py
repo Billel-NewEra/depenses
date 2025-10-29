@@ -50,6 +50,14 @@ def init_db():
             FOREIGN KEY (avance_id) REFERENCES avances(id) ON DELETE CASCADE
         )
     """)
+    
+    cur.execute("""
+        CREATE TABLE IF NOT EXISTS note (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            description TEXT NOT NULL,
+            date_enregistrement TEXT NOT NULL
+        )
+    """)
     cur.execute("""
         CREATE TABLE IF NOT EXISTS entrees (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -433,6 +441,72 @@ def delete_entree(entree_id):
     return redirect(url_for("entrees"))
 
 # ✅ Appel immédiat au démarrage, que ce soit avec Flask, Gunicorn ou autre
+
+
+# =======================
+# 🗒️ GESTION DES NOTES
+# =======================
+@app.route("/notes")
+def notes():
+    conn = db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM note ORDER BY date_enregistrement DESC, id DESC")
+    notes = cur.fetchall()
+    conn.close()
+    return render_template("notes.html", notes=notes)
+
+@app.route("/note/new", methods=["GET","POST"])
+def add_note():
+    if request.method == "POST":
+        description = request.form.get("description","").strip()
+        if not description:
+            flash("Veuillez saisir une description.", "danger")
+            return render_template("add_note.html")
+        date_enregistrement = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        conn = db()
+        cur = conn.cursor()
+        cur.execute("INSERT INTO note (description, date_enregistrement) VALUES (?,?)",
+                    (description, date_enregistrement))
+        conn.commit()
+        conn.close()
+        flash("Note ajoutée.", "success")
+        return redirect(url_for("notes"))
+    return render_template("add_note.html")
+
+@app.route("/note/edit/<int:note_id>", methods=["GET","POST"])
+def edit_note(note_id):
+    conn = db()
+    cur = conn.cursor()
+    cur.execute("SELECT * FROM note WHERE id=?", (note_id,))
+    n = cur.fetchone()
+    if not n:
+        conn.close()
+        flash("Note introuvable.", "warning")
+        return redirect(url_for("notes"))
+    if request.method == "POST":
+        description = request.form.get("description","").strip()
+        if not description:
+            flash("La description ne peut pas être vide.", "danger")
+            return render_template("edit_note.html", n=n)
+        cur.execute("UPDATE note SET description=? WHERE id=?", (description, note_id))
+        conn.commit()
+        conn.close()
+        flash("Note modifiée.", "success")
+        return redirect(url_for("notes"))
+    conn.close()
+    return render_template("edit_note.html", n=n)
+
+@app.route("/note/delete/<int:note_id>", methods=["POST"])
+def delete_note(note_id):
+    conn = db()
+    cur = conn.cursor()
+    cur.execute("DELETE FROM note WHERE id=?", (note_id,))
+    conn.commit()
+    conn.close()
+    flash("Note supprimée.", "success")
+    return redirect(url_for("notes"))
+
+
 init_db()
 
 if __name__ == "__main__":

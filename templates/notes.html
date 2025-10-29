@@ -1,0 +1,36 @@
+
+{% extends "base.html" %}
+{% block content %}
+<h2 class="mb-3">🗒️ Notes</h2>
+<div class="mb-3">
+  <a href="{{ url_for('add_note') }}" class="btn btn-secondary">➕ Nouvelle note</a>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle">
+  <thead class="table-light">
+    <tr>
+      <th>Description</th>
+      <th>Date</th>
+      <th style="width:150px;">Actions</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for n in notes %}
+    <tr>
+      <td>{{ n.description }}</td>
+      <td>{{ n.date_enregistrement }}</td>
+      <td>
+        <a href="{{ url_for('edit_note', note_id=n.id) }}" class="btn btn-sm btn-warning">✏️</a>
+        <form method="POST" action="{{ url_for('delete_note', note_id=n.id) }}" class="d-inline"
+              onsubmit="return confirm('Supprimer cette note ?')">
+          <button class="btn btn-sm btn-danger">🗑️</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="3" class="text-muted">Aucune note enregistrée.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+</div>
+{% endblock %}

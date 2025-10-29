@@ -4,6 +4,7 @@
 <div class="mb-3 d-flex gap-2">
   <a href="{{ url_for('add_avance') }}" class="btn btn-primary">➕ Nouvelle avance</a>
   <a href="{{ url_for('add_entree') }}" class="btn btn-success">➕ Nouvelle entrée client</a>
+  <a href="{{ url_for('add_note') }}" class="btn btn-secondary">🗒️ Nouvelle note</a>
 </div>
 <div class="row mb-4">
   <div class="col">💵 Total Versements: <strong>{{ '%.2f'|format(total_versements) }} DA</strong></div>
